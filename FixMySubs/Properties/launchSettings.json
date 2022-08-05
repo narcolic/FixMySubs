@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "FixMySubs (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "FixMySubs (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
