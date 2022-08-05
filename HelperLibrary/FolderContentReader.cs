@@ -6,7 +6,7 @@ namespace HelperLibrary;
 
 public class FolderContentReader
 {
-    private List<StorageFile> __StorageFiles;
+    private readonly List<StorageFile> __StorageFiles;
 
     public FolderContentReader(List<StorageFile> files)
     {

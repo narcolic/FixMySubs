@@ -65,5 +65,4 @@ public class TvSeriesFileNameAnalyzer : FileNameAnalyserBase
 
         return string.Empty;
     }
-
 }
