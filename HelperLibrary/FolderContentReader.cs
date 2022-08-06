@@ -1,45 +1,25 @@
-﻿using System.Collections.Generic;
-using System.Text.RegularExpressions;
+﻿using HelperLibrary.Models;
+using System.Collections.Generic;
+using System.Linq;
 using Windows.Storage;
 
 namespace HelperLibrary;
 
 public class FolderContentReader
 {
-    private readonly List<StorageFile> __StorageFiles;
-
-    public FolderContentReader(List<StorageFile> files)
+    public void OrganizeFiles(List<StorageFile> files)
     {
-        TvSeriesRegex = new Regex(@"S(?<season>\d{1,2})E(?<episode>\d{1,2})");
-        __StorageFiles = files;
-        OrganizeFiles();
-    }
-
-    private static bool IsTvSeries(List<Regex> regexes, string fileName)
-    {
-        foreach (Regex regex in regexes)
-        {
-            if (regex.Match(fileName).Success)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private void OrganizeFiles()
-    {
-        foreach (StorageFile file in __StorageFiles)
+        //Clear files that proper subs
+        foreach (StorageFile file in files.GroupBy(x => x.DisplayName).Where(x => x.Count() == 1).Select(x => x.First()).ToList())
         {
             if (Constants.VideoFileExtensions.Contains(file.FileType))
             {
                 switch (file.DisplayName)
                 {
-                    case string displayName when (IsTvSeries(Constants.TvSeries_Regex_SeasonEpisode, displayName)):
-                        TvSeriesFiles.Add(file);
+                    case string displayName when (IsTvSeries(displayName)):
+                        TvSeriesFiles.Add(file.ToTVSeriesFile());
                         break;
-                    case string displayName when (!IsTvSeries(Constants.TvSeries_Regex_SeasonEpisode, displayName)):
+                    case string displayName when (!IsTvSeries(displayName)):
                         MovieFiles.Add(file);
                         break;
                     default:
@@ -53,10 +33,10 @@ public class FolderContentReader
             {
                 switch (file.DisplayName)
                 {
-                    case string displayName when (IsTvSeries(Constants.TvSeries_Regex_SeasonEpisode, displayName)):
-                        TvSeriesSubtitleFiles.Add(file);
+                    case string displayName when (IsTvSeries(displayName)):
+                        TvSeriesSubtitleFiles.Add(file.ToTVSeriesFile());
                         break;
-                    case string displayName when (!IsTvSeries(Constants.TvSeries_Regex_SeasonEpisode, displayName)):
+                    case string displayName when (!IsTvSeries(displayName)):
                         MovieSubtitleFiles.Add(file);
                         break;
                     default:
@@ -65,13 +45,14 @@ public class FolderContentReader
                 }
             }
         }
+
+        bool IsTvSeries(string fileName) => Constants.TvSeries_Regex_SeasonEpisode.Any(regex => regex.Match(fileName).Success);
     }
 
-    public List<StorageFile> MovieFiles { get; private set; } = new List<StorageFile>();
-    public List<StorageFile> MovieSubtitleFiles { get; private set; } = new List<StorageFile>();
-    public List<StorageFile> TvSeriesFiles { get; private set; } = new List<StorageFile>();
-    public Regex TvSeriesRegex { get; }
-    public List<StorageFile> TvSeriesSubtitleFiles { get; private set; } = new List<StorageFile>();
-    public List<StorageFile> UncategorisedSubtitleFiles { get; private set; } = new List<StorageFile>();
-    public List<StorageFile> UncategorisedVideoFiles { get; private set; } = new List<StorageFile>();
+    public List<StorageFile> MovieFiles { get; private set; } = new();
+    public List<StorageFile> MovieSubtitleFiles { get; private set; } = new();
+    public List<TvSeriesFile> TvSeriesFiles { get; private set; } = new();
+    public List<TvSeriesFile> TvSeriesSubtitleFiles { get; private set; } = new();
+    public List<StorageFile> UncategorisedSubtitleFiles { get; private set; } = new();
+    public List<StorageFile> UncategorisedVideoFiles { get; private set; } = new();
 }

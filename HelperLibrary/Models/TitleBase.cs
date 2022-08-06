@@ -1,9 +1,14 @@
-﻿namespace HelperLibrary.Models;
+﻿using HelperLibrary.Enums;
+using Windows.Storage;
 
-public abstract class TitleBase
+namespace HelperLibrary.Models;
+
+public class FileBase
 {
-    public string FileNamePath { get; set; }
+    public string Extension { get; set; }
+    public StorageFile File { get; set; }
+    public string FileName { get; set; }
     public string Name { get; set; }
     public string Quality { get; set; }
-    public string Extension { get; set; }
+    public FileType Type { get; set; }
 }

@@ -1,8 +1,8 @@
 ﻿using HelperLibrary;
-using HelperLibrary.Enums;
 using Microsoft.UI.Xaml;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Windows.Storage;
 using Windows.Storage.AccessCache;
 using Windows.Storage.Pickers;
@@ -18,6 +18,9 @@ namespace FixMySubs;
 /// </summary>
 public sealed partial class MainWindow : Window
 {
+    List<HelperLibrary.Models.TvSeriesFile> tvSeriesFiles;
+    List<HelperLibrary.Models.TvSeriesFile> tvSeriesSubFiles;
+
     public MainWindow() => InitializeComponent();
 
     private async void Open_Button_ClickAsync(object sender, RoutedEventArgs e)
@@ -33,19 +36,33 @@ public sealed partial class MainWindow : Window
         if (!Equals(folder, null))
         {
             StorageApplicationPermissions.FutureAccessList.AddOrReplace("PickedFolderToken", folder);
+
             List<StorageFile> files = new();
             files.AddRange(await folder.GetFilesAsync());
-            FolderContentReader folderContentReader = new(files);
 
-            var tvSeriesFiles = folderContentReader.TvSeriesFiles;
-            var tvSeriesSubFiles = folderContentReader.TvSeriesSubtitleFiles;
-            var movieFiles = folderContentReader.MovieFiles;
-            var movieSubFiles = folderContentReader.MovieSubtitleFiles;
+            FolderContentReader folderContentReader = new();
+            folderContentReader.OrganizeFiles(files);
 
-            FileNameAnalyserBase tvSeriesFileNameAnalyzer = FileAnalyzerFactory.GetFileAnalyzer(FileTypeCategories.TvSeries);
+            tvSeriesFiles = folderContentReader.TvSeriesFiles;
+            tvSeriesSubFiles = folderContentReader.TvSeriesSubtitleFiles;
 
-            //List<TvSeriesTitle> tvSeriesVideoModels = tvSeriesFileNameAnalyzer.ConvertPathsToModels(tvSeriesFiles).OfType<TvSeriesTitle>().ToList();
-            //List<TvSeriesTitle> tvSeriesSubtitlesModels = tvSeriesFileNameAnalyzer.ConvertPathsToModels(tvSeriesSubFiles).OfType<TvSeriesTitle>().ToList();
+            importResult.Text = $"Found {tvSeriesFiles.Count} TV Series video files and {tvSeriesSubFiles.Count} subtitle files.";
         }
+    }
+
+    private async void Rename_ClickAsync(object sender, RoutedEventArgs e)
+    {
+        int renameCounter = 0;
+        foreach (var video in tvSeriesFiles)
+        {
+            var sub = tvSeriesSubFiles.FirstOrDefault(sub => sub.Name.Equals(video.Name, StringComparison.OrdinalIgnoreCase) && sub.Season == video.Season && sub.Episode == video.Episode);
+
+            if (sub != null)
+            {
+                renameCounter++;
+                await sub.File.RenameAsync($"{video.FileName}{sub.File.FileType}");
+            }
+        }
+        renameResult.Text = $"Renamed {renameCounter} files";
     }
 }

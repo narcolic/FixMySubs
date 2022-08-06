@@ -1,6 +1,6 @@
 ﻿namespace HelperLibrary.Enums;
 
-public enum FileTypeCategories
+public enum FileType
 {
     TvSeries = 1,
     Movies = 2,

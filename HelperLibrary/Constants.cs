@@ -9,7 +9,7 @@ public static class Constants
 
     public static readonly List<Regex> TvSeries_Regex_SeasonEpisode = new()
     {
-        new Regex(@"S(?<season>\d{1,2})E(?<episode>\d{1,2})", RegexOptions.IgnoreCase),
+        new Regex(@"(?i)S(?-i)(?<season>\d{1,2})(?i)E(?-i)(?<episode>\d{1,2})", RegexOptions.IgnoreCase),
         new Regex(@"(?<season>\d{1,2})x(?<episode>\d{1,2})", RegexOptions.IgnoreCase)
     };
 

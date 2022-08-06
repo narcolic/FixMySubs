@@ -1,7 +1,7 @@
 ﻿namespace HelperLibrary.Models;
 
-public class TvSeriesTitle : TitleBase
+public class TvSeriesFile : FileBase
 {
-    public int Season { get; set; }
     public int Episode { get; set; }
+    public int Season { get; set; }
 }

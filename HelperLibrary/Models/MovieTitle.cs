@@ -1,6 +1,6 @@
 ﻿namespace HelperLibrary.Models;
 
-public class MovieTitle : TitleBase
+public class MovieTitle : FileBase
 {
     public int Year { get; set; }
 }
