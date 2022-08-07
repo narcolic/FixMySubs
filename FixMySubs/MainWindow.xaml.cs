@@ -1,8 +1,10 @@
 ﻿using HelperLibrary;
+using HelperLibrary.Models;
 using Microsoft.UI.Xaml;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.AccessCache;
 using Windows.Storage.Pickers;
@@ -53,16 +55,116 @@ public sealed partial class MainWindow : Window
     private async void Rename_ClickAsync(object sender, RoutedEventArgs e)
     {
         int renameCounter = 0;
+        List<Task> RenameTasks = new();
         foreach (var video in tvSeriesFiles)
         {
-            var sub = tvSeriesSubFiles.FirstOrDefault(sub => sub.Name.Equals(video.Name, StringComparison.OrdinalIgnoreCase) && sub.Season == video.Season && sub.Episode == video.Episode);
-
+            var sub = tvSeriesSubFiles.FirstOrDefault(sub => sub.Name.Equals(video.Name, StringComparison.OrdinalIgnoreCase)
+                                                             && sub.SourceGroup == video.SourceGroup
+                                                             && sub.SourceType == video.SourceType
+                                                             && sub.Encoding == video.Encoding
+                                                             && sub.Resolution == video.Resolution
+                                                             && sub.Year == video.Year
+                                                             && sub.Season == video.Season
+                                                             && sub.Episode == video.Episode);
             if (sub != null)
             {
-                renameCounter++;
-                await sub.File.RenameAsync($"{video.FileName}{sub.File.FileType}");
+                RenameSub(video, sub);
+                continue;
+            }
+
+            sub = tvSeriesSubFiles.FirstOrDefault(sub => sub.Name.Equals(video.Name, StringComparison.OrdinalIgnoreCase)
+                                                         && sub.SourceGroup == video.SourceGroup
+                                                         && sub.SourceType == video.SourceType
+                                                         && sub.Encoding == video.Encoding
+                                                         && sub.Resolution == video.Resolution
+                                                         && sub.Season == video.Season
+                                                         && sub.Episode == video.Episode);
+            if (sub != null)
+            {
+                RenameSub(video, sub);
+                continue;
+            }
+
+            sub = tvSeriesSubFiles.FirstOrDefault(sub => sub.Name.Equals(video.Name, StringComparison.OrdinalIgnoreCase)
+                                                         && sub.SourceGroup == video.SourceGroup
+                                                         && sub.SourceType == video.SourceType
+                                                         && sub.Encoding == video.Encoding
+                                                         && sub.Season == video.Season
+                                                         && sub.Episode == video.Episode);
+            if (sub != null)
+            {
+                RenameSub(video, sub);
+                continue;
+            }
+
+            sub = tvSeriesSubFiles.FirstOrDefault(sub => sub.Name.Equals(video.Name, StringComparison.OrdinalIgnoreCase)
+                                                         && sub.SourceGroup == video.SourceGroup
+                                                         && sub.SourceType == video.SourceType
+                                                         && sub.Season == video.Season
+                                                         && sub.Episode == video.Episode);
+            if (sub != null)
+            {
+                RenameSub(video, sub);
+                continue;
+            }
+
+            sub = tvSeriesSubFiles.FirstOrDefault(sub => sub.Name.Equals(video.Name, StringComparison.OrdinalIgnoreCase)
+                                                         && sub.SourceGroup == video.SourceGroup
+                                                         && sub.Resolution == video.Resolution
+                                                         && sub.Season == video.Season
+                                                         && sub.Episode == video.Episode);
+            if (sub != null)
+            {
+                RenameSub(video, sub);
+                continue;
+            }
+
+            sub = tvSeriesSubFiles.FirstOrDefault(sub => sub.Name.Equals(video.Name, StringComparison.OrdinalIgnoreCase)
+                                                         && sub.SourceGroup == video.SourceGroup
+                                                         && sub.Season == video.Season
+                                                         && sub.Episode == video.Episode);
+            if (sub != null)
+            {
+                RenameSub(video, sub);
+                continue;
+            }
+
+            sub = tvSeriesSubFiles.FirstOrDefault(sub => sub.Name.Equals(video.Name, StringComparison.OrdinalIgnoreCase)
+                                                         && sub.Encoding == video.Encoding
+                                                         && sub.Season == video.Season
+                                                         && sub.Episode == video.Episode);
+            if (sub != null)
+            {
+                RenameSub(video, sub);
+                continue;
+            }
+
+            sub = tvSeriesSubFiles.FirstOrDefault(sub => sub.Name.Equals(video.Name, StringComparison.OrdinalIgnoreCase)
+                                                        && sub.Resolution == video.Resolution
+                                                        && sub.Season == video.Season
+                                                        && sub.Episode == video.Episode);
+            if (sub != null)
+            {
+                RenameSub(video, sub);
+                continue;
+            }
+
+            sub = tvSeriesSubFiles.FirstOrDefault(sub => sub.Name.Equals(video.Name, StringComparison.OrdinalIgnoreCase)
+                                                         && sub.Season == video.Season
+                                                         && sub.Episode == video.Episode);
+            if (sub != null)
+            {
+                RenameSub(video, sub);
+                continue;
             }
         }
-        renameResult.Text = $"Renamed {renameCounter} files";
+        await Task.WhenAll(RenameTasks);
+        renameResult.Text = $"Renamed {renameCounter} files.";
+
+        void RenameSub(TvSeriesFile video, TvSeriesFile sub)
+        {
+            renameCounter++;
+            RenameTasks.Add(sub.File.RenameAsync($"{video.FileName}{sub.File.FileType}").AsTask());
+        }
     }
 }
