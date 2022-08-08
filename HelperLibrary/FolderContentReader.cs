@@ -46,6 +46,8 @@ public class FolderContentReader
             }
         }
 
+        TvSeriesFiles = TvSeriesFiles.OrderBy(x => x.Season).ThenBy(x => x.Episode).ToList();
+
         bool IsTvSeries(string fileName) => Constants.TvSeries_Regex_SeasonEpisode.Any(regex => regex.Match(fileName).Success);
     }
 

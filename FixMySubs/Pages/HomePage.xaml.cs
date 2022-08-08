@@ -47,10 +47,10 @@ public sealed partial class HomePage : Page
             tvSeriesFiles = folderContentReader.TvSeriesFiles;
             tvSeriesSubFiles = folderContentReader.TvSeriesSubtitleFiles;
 
-            //importResult.Text = $"Found {tvSeriesFiles.Count} TV Series video files and {tvSeriesSubFiles.Count} subtitle files.";
+            importResult.Text = $"Found {tvSeriesFiles.Count} TV Series video files and {tvSeriesSubFiles.Count} subtitle files.";
+            BaseExample.ItemsSource = tvSeriesFiles;
         }
 
-        BaseExample.ItemsSource = tvSeriesFiles;
     }
 
     private async void Rename_ClickAsync(object sender, RoutedEventArgs e)

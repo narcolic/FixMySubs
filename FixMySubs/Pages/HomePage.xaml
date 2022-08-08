@@ -10,7 +10,7 @@
 
     <Page.Resources>
         <DataTemplate x:Key="VideoListViewTemplate" x:DataType="x1:TvSeriesFile">
-            <TextBlock Text="{x:Bind Name}" x:Phase="1" Margin="0,5,0,5"/>
+            <TextBlock Text="{x:Bind FileName}" x:Phase="1" Margin="0,5,0,5"/>
         </DataTemplate>
     </Page.Resources>
 
