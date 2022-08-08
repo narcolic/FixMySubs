@@ -46,6 +46,6 @@ namespace FixMySubs
             m_window.Activate();
         }
 
-        private Window m_window;
+        internal Window m_window;
     }
 }
