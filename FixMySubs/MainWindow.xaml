@@ -10,20 +10,21 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <NavigationView x:Name="navMenu" 
-                        Grid.Row="1" 
-                        PaneDisplayMode="Auto" 
-                        Header="Test"
-                        IsTabStop="False" 
+        <NavigationView x:Name="navMenu"
+                        Grid.Row="1"
+                        PaneDisplayMode="Auto"
                         IsBackButtonVisible="Collapsed"
-                        SelectionChanged="NavigationView_SelectionChanged" >
+                        SelectionChanged="NavigationView_SelectionChanged">
+            <NavigationView.Header>
+                <TextBlock Text="Fix My Subs" FontSize="20" FontWeight="Bold" Margin="12,0,0,0" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}" />
+            </NavigationView.Header>
             <NavigationView.MenuItems>
                 <NavigationViewItem Content="Home Page" Tag="HomePage" Icon="Home" />
             </NavigationView.MenuItems>
-            <Frame Margin="0,0,0,0" x:Name="contentFrame" />
+            <Frame x:Name="contentFrame" Margin="12,12,12,12" />
         </NavigationView>
     </Grid>
 </Window>

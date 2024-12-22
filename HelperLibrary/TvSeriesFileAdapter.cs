@@ -10,8 +10,6 @@ namespace HelperLibrary;
 
 public static class TvSeriesFileAdapter
 {
-    public static List<TvSeriesFile> ToTVSeriesFile(this List<StorageFile> files) => files.Select(file => file.ToTVSeriesFile()).ToList();
-
     public static TvSeriesFile ToTVSeriesFile(this StorageFile file)
     {
         string fileName = Path.GetFileNameWithoutExtension(file.Path);
@@ -25,8 +23,8 @@ public static class TvSeriesFileAdapter
             Season = season >= 0 ? season : throw new ArgumentOutOfRangeException("Season number incorrect. Should be more than 0."),
             Episode = episode >= 0 ? episode : throw new ArgumentOutOfRangeException("Episode number incorrect. Should be more than 0."),
             Encoding = Constants.Encoding_Regex.Match(fileName).Value,
-            Name = GetSeriesName(fileName),
-            FileName = fileName,
+            NormalizedName = GetSeriesName(fileName),
+            FileNameNoExtension = fileName,
             File = file,
             Resolution = Constants.Resolution_Regex.Match(fileName).Value,
             SourceGroup = sourceGroup,
