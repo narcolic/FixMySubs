@@ -5,13 +5,13 @@ namespace HelperLibrary;
 
 public static class Constants
 {
-    public static readonly List<string> SubtitleFileExtensions = new() { ".srt", ".sub" };
+    public static readonly List<string> SubtitleFileExtensions = [".srt", ".sub"];
 
-    public static readonly List<Regex> TvSeries_Regex_SeasonEpisode = new()
-    {
+    public static readonly List<Regex> TvSeries_Regex_SeasonEpisode =
+    [
         new Regex(@"(?i)S(?-i)(?<season>\d{1,2})(?i)E(?-i)(?<episode>\d{1,2})", RegexOptions.IgnoreCase),
         new Regex(@"(?<season>\d{1,2})x(?<episode>\d{1,2})", RegexOptions.IgnoreCase)
-    };
+    ];
 
     public static Regex Year_Regex = new(@"\b(19|20)\d{2}\b", RegexOptions.IgnoreCase);
 
@@ -19,7 +19,7 @@ public static class Constants
 
     public static Regex Encoding_Regex = new(@"\b(X|H)26(4|5)\b", RegexOptions.IgnoreCase);
 
-    public static readonly List<string> VideoFileExtensions = new() { ".mkv", ".avi", ".mp4", ".mpg", ".mpeg" };
+    public static readonly List<string> VideoFileExtensions = [".mkv", ".avi", ".mp4", ".mpg", ".mpeg"];
 
     public static readonly Regex Normalize_Regex = new(@"((?:\b|_)(?<!^)(a(?!$)|an|the|and|or|of)(?!$)(?:\b|_))|\W|_", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 

@@ -46,15 +46,15 @@ public class FolderContentReader
             }
         }
 
-        TvSeriesFiles = TvSeriesFiles.OrderBy(x => x.Season).ThenBy(x => x.Episode).ToList();
+        TvSeriesFiles = [.. TvSeriesFiles.OrderBy(x => x.Season).ThenBy(x => x.Episode)];
 
         bool IsTvSeries(string fileName) => Constants.TvSeries_Regex_SeasonEpisode.Any(regex => regex.Match(fileName).Success);
     }
 
-    public List<StorageFile> MovieFiles { get; private set; } = new();
-    public List<StorageFile> MovieSubtitleFiles { get; private set; } = new();
-    public List<TvSeriesFile> TvSeriesFiles { get; private set; } = new();
-    public List<TvSeriesFile> TvSeriesSubtitleFiles { get; private set; } = new();
-    public List<StorageFile> UncategorisedSubtitleFiles { get; private set; } = new();
-    public List<StorageFile> UncategorisedVideoFiles { get; private set; } = new();
+    public List<StorageFile> MovieFiles { get; private set; } = [];
+    public List<StorageFile> MovieSubtitleFiles { get; private set; } = [];
+    public List<TvSeriesFile> TvSeriesFiles { get; private set; } = [];
+    public List<TvSeriesFile> TvSeriesSubtitleFiles { get; private set; } = [];
+    public List<StorageFile> UncategorisedSubtitleFiles { get; private set; } = [];
+    public List<StorageFile> UncategorisedVideoFiles { get; private set; } = [];
 }

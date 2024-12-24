@@ -1,6 +1,5 @@
 ﻿using HelperLibrary.Models;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -20,8 +19,8 @@ public static class TvSeriesFileAdapter
 
         return new TvSeriesFile
         {
-            Season = season >= 0 ? season : throw new ArgumentOutOfRangeException("Season number incorrect. Should be more than 0."),
-            Episode = episode >= 0 ? episode : throw new ArgumentOutOfRangeException("Episode number incorrect. Should be more than 0."),
+            Season = season >= 0 ? season : throw new ArgumentOutOfRangeException(nameof(season), "Season number incorrect. Should be more than 0."),
+            Episode = episode >= 0 ? episode : throw new ArgumentOutOfRangeException(nameof(episode), "Episode number incorrect. Should be more than 0."),
             Encoding = Constants.Encoding_Regex.Match(fileName).Value,
             NormalizedName = GetSeriesName(fileName),
             FileNameNoExtension = fileName,

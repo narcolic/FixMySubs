@@ -1,10 +1,10 @@
-﻿using HelperLibrary;
+﻿using FixMySubs.Helper;
+using HelperLibrary;
 using HelperLibrary.Models;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Storage;
@@ -16,14 +16,14 @@ namespace FixMySubs.Pages;
 
 public sealed partial class HomePage : Page
 {
-    List<TvSeriesFile> tvSeriesFiles;
-    List<TvSeriesFile> tvSeriesSubFiles;
-    public ObservableCollection<FileToRename> FilesToRename { get; set; } = [];
+    private readonly HomePageViewModel _viewModel;
 
     public HomePage()
     {
         InitializeComponent();
-        MovieListView.ItemsSource = FilesToRename;
+        _viewModel = new HomePageViewModel();
+        DataContext = _viewModel;
+        MovieListView.ItemsSource = _viewModel.FilesToRename;
     }
 
     private async void BrowseButton_ClickAsync(object sender, RoutedEventArgs e)
@@ -38,143 +38,30 @@ public sealed partial class HomePage : Page
         if (folder != null)
         {
             StorageApplicationPermissions.FutureAccessList.AddOrReplace("PickedFolderToken", folder);
+            _viewModel.FilesToRename.Clear();
+            _viewModel.SelectedFolderPath = folder.Path;
 
-            List<StorageFile> files = [.. await folder.GetFilesAsync()];
-
-            FilesToRename.Clear();
             FolderContentReader folderContentReader = new();
-            folderContentReader.OrganizeFiles(files);
+            folderContentReader.OrganizeFiles([.. await folder.GetFilesAsync()]);
 
-            tvSeriesFiles = folderContentReader.TvSeriesFiles;
-            tvSeriesSubFiles = folderContentReader.TvSeriesSubtitleFiles;
+            _viewModel.TvSeriesFiles = folderContentReader.TvSeriesFiles;
+            _viewModel.TvSeriesSubFiles = folderContentReader.TvSeriesSubtitleFiles;
 
-            foreach (var file in tvSeriesFiles)
+            foreach (var file in _viewModel.TvSeriesFiles)
             {
-                FilesToRename.Add(new FileToRename { Name = file.FileNameNoExtension, IsRenamed = false });
+
+                _viewModel.FilesToRename.Add(new FileToRename { Name = file.FileNameNoExtension, IsRenamed = false });
             }
 
+            RenameButton.IsEnabled = _viewModel.FilesToRename.Count > 0;
         }
 
     }
 
     private async void RenameButton_ClickAsync(object sender, RoutedEventArgs e)
     {
-        int renameCounter = 0;
-        List<Task> RenameTasks = [];
-        foreach (var video in tvSeriesFiles)
-        {
-            var sub = tvSeriesSubFiles.FirstOrDefault(sub => sub.NormalizedName.Equals(video.NormalizedName, StringComparison.OrdinalIgnoreCase)
-                                                             && sub.SourceGroup == video.SourceGroup
-                                                             && sub.SourceType == video.SourceType
-                                                             && sub.Encoding == video.Encoding
-                                                             && sub.Resolution == video.Resolution
-                                                             && sub.Year == video.Year
-                                                             && sub.Season == video.Season
-                                                             && sub.Episode == video.Episode);
-            if (sub != null)
-            {
-                RenameSub(video, sub);
-                continue;
-            }
-
-            sub = tvSeriesSubFiles.FirstOrDefault(sub => sub.NormalizedName.Equals(video.NormalizedName, StringComparison.OrdinalIgnoreCase)
-                                                         && sub.SourceGroup == video.SourceGroup
-                                                         && sub.SourceType == video.SourceType
-                                                         && sub.Encoding == video.Encoding
-                                                         && sub.Resolution == video.Resolution
-                                                         && sub.Season == video.Season
-                                                         && sub.Episode == video.Episode);
-            if (sub != null)
-            {
-                RenameSub(video, sub);
-                continue;
-            }
-
-            sub = tvSeriesSubFiles.FirstOrDefault(sub => sub.NormalizedName.Equals(video.NormalizedName, StringComparison.OrdinalIgnoreCase)
-                                                         && sub.SourceGroup == video.SourceGroup
-                                                         && sub.SourceType == video.SourceType
-                                                         && sub.Encoding == video.Encoding
-                                                         && sub.Season == video.Season
-                                                         && sub.Episode == video.Episode);
-            if (sub != null)
-            {
-                RenameSub(video, sub);
-                continue;
-            }
-
-            sub = tvSeriesSubFiles.FirstOrDefault(sub => sub.NormalizedName.Equals(video.NormalizedName, StringComparison.OrdinalIgnoreCase)
-                                                         && sub.SourceGroup == video.SourceGroup
-                                                         && sub.SourceType == video.SourceType
-                                                         && sub.Season == video.Season
-                                                         && sub.Episode == video.Episode);
-            if (sub != null)
-            {
-                RenameSub(video, sub);
-                continue;
-            }
-
-            sub = tvSeriesSubFiles.FirstOrDefault(sub => sub.NormalizedName.Equals(video.NormalizedName, StringComparison.OrdinalIgnoreCase)
-                                                         && sub.SourceGroup == video.SourceGroup
-                                                         && sub.Resolution == video.Resolution
-                                                         && sub.Season == video.Season
-                                                         && sub.Episode == video.Episode);
-            if (sub != null)
-            {
-                RenameSub(video, sub);
-                continue;
-            }
-
-            sub = tvSeriesSubFiles.FirstOrDefault(sub => sub.NormalizedName.Equals(video.NormalizedName, StringComparison.OrdinalIgnoreCase)
-                                                         && sub.SourceGroup == video.SourceGroup
-                                                         && sub.Season == video.Season
-                                                         && sub.Episode == video.Episode);
-            if (sub != null)
-            {
-                RenameSub(video, sub);
-                continue;
-            }
-
-            sub = tvSeriesSubFiles.FirstOrDefault(sub => sub.NormalizedName.Equals(video.NormalizedName, StringComparison.OrdinalIgnoreCase)
-                                                         && sub.Encoding == video.Encoding
-                                                         && sub.Season == video.Season
-                                                         && sub.Episode == video.Episode);
-            if (sub != null)
-            {
-                RenameSub(video, sub);
-                continue;
-            }
-
-            sub = tvSeriesSubFiles.FirstOrDefault(sub => sub.NormalizedName.Equals(video.NormalizedName, StringComparison.OrdinalIgnoreCase)
-                                                        && sub.Resolution == video.Resolution
-                                                        && sub.Season == video.Season
-                                                        && sub.Episode == video.Episode);
-            if (sub != null)
-            {
-                RenameSub(video, sub);
-                continue;
-            }
-
-            sub = tvSeriesSubFiles.FirstOrDefault(sub => sub.NormalizedName.Equals(video.NormalizedName, StringComparison.OrdinalIgnoreCase)
-                                                         && sub.Season == video.Season
-                                                         && sub.Episode == video.Episode);
-            if (sub != null)
-            {
-                RenameSub(video, sub);
-                continue;
-            }
-        }
-        await Task.WhenAll(RenameTasks);
-
-        MovieListView.ItemsSource = null; // Refresh binding
-        MovieListView.ItemsSource = FilesToRename;
-
-        StatusTextBlock.Text = $"{renameCounter} Subtitles renamed successfully!";
-
-        void RenameSub(TvSeriesFile video, TvSeriesFile sub)
-        {
-            renameCounter++;
-            RenameTasks.Add(sub.File.RenameAsync($"{video.FileNameNoExtension}{sub.File.FileType}").AsTask());
-            FilesToRename.First(file => file.Name == video.FileNameNoExtension).IsRenamed = true;
-        }
+        await TvSeriesFileRenamer.RenameFilesAsync(_viewModel);
+        StatusTextBlock.Text = $"{_viewModel.RenamedSubtitlesCount} Subtitles renamed successfully!";
     }
+
 }

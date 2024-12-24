@@ -4,39 +4,51 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="using:FixMySubs.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:x1="using:HelperLibrary.Models"
+    xmlns:converters="using:CommunityToolkit.WinUI.Converters"
+    xmlns:vm="using:FixMySubs.Pages" 
     mc:Ignorable="d">
 
-    <Grid>
-        <!-- Page Header -->
-        <StackPanel Orientation="Vertical" Margin="12,12,12,0">
-            <TextBlock Text="Organize your subtitles easily" FontSize="16" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
-        </StackPanel>
+    <Page.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+    </Page.Resources>
+    
+    <Page.DataContext>
+        <vm:HomePageViewModel />
+    </Page.DataContext>
 
+    <Grid>
         <!-- Content Section -->
-        <StackPanel Margin="20,80,20,20" Spacing="16">
+        <StackPanel Margin="20,20,20,20" Spacing="16">
             <!-- Folder Selection -->
-            <TextBlock Text="Select a folder containing movies and subtitles:" FontSize="16" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}" />
+            <TextBlock Text="Select a folder containing video files and subtitles:" FontSize="16" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}" />
 
             <StackPanel Orientation="Horizontal" Spacing="8">
-                <TextBox x:Name="FolderPathTextBox" Width="500" IsReadOnly="True" PlaceholderText="No folder selected..." VerticalAlignment="Center" />
+                <TextBox x:Name="FolderPathTextBox" 
+                    Width="500" 
+                    PlaceholderText="No folder selected..." 
+                    VerticalAlignment="Center" 
+                    Text="{Binding SelectedFolderPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <Button x:Name="BrowseButton" Content="Browse" Width="100" Click="BrowseButton_ClickAsync" />
             </StackPanel>
 
-            <!-- Movie List Section -->
-            <TextBlock Text="Movies in Selected Folder:" FontSize="16" Margin="0,20,0,0" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}" />
-            <ListView x:Name="MovieListView" Height="200" BorderBrush="{ThemeResource SystemControlForegroundBaseMediumBrush}" BorderThickness="1">
+            <!-- Video List Section -->
+            <TextBlock Text="Videos in Selected Folder:" FontSize="16" Margin="0,20,0,0" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}" />
+            <ListView x:Name="MovieListView" Height="400" BorderBrush="{ThemeResource SystemControlForegroundBaseMediumBrush}" BorderThickness="1">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{Binding Name}" FontSize="14" />
-                            <SymbolIcon Symbol="Accept" Visibility="{Binding IsRenamed, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="8,0,0,0" />
+                            <SymbolIcon Symbol="Accept" 
+                                Visibility="{Binding IsRenamed, Converter={StaticResource BoolToVisibilityConverter}}" 
+                                Margin="8,0,0,0" 
+                                Foreground="Green" />
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
 
             <!-- Rename Button -->
-            <Button x:Name="RenameButton" Content="Rename Subtitles" Width="200" Height="48" Click="RenameButton_ClickAsync" IsEnabled="False" Style="{StaticResource AccentButtonStyle}" />
+            <Button x:Name="RenameButton" Content="Rename" Width="150" Height="48" Click="RenameButton_ClickAsync" IsEnabled="False" Style="{StaticResource AccentButtonStyle}" />
 
             <!-- Status Display -->
             <TextBlock x:Name="StatusTextBlock" Text="" FontSize="14" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
