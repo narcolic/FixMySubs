@@ -1,4 +1,6 @@
-﻿using FixMySubs.Pages;
+﻿using FixMySubs.Helper;
+using FixMySubs.Pages;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
@@ -11,21 +13,28 @@ public sealed partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        ExtendsContentIntoTitleBar = true;
+        Title = AppTitleText;
+        SetTitleBar(this.AppTitleBar);
 
-        navMenu.SelectedItem = navMenu.MenuItems.OfType<NavigationViewItem>().First();
+        AppWindow appWindow = WindowHelper.GetAppWindow(this);
+        appWindow.SetIcon("Assets/Tiles/GalleryIcon.ico");
+        appWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
+
+        NavigationViewControl.SelectedItem = NavigationViewControl.MenuItems.OfType<NavigationViewItem>().First();
     }
 
     private void NavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
     {
         if (args.IsSettingsSelected)
         {
-            sender.Header = "Settings";
             contentFrame.Navigate(typeof(SettingsPage));
         }
         else
         {
-            sender.Header = "Home";
             contentFrame.Navigate(Type.GetType("FixMySubs.Pages." + ((string)((NavigationViewItem)args.SelectedItem).Tag)));
         }
     }
+
+    public string AppTitleText => "Rename Subs";
 }
